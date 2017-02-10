@@ -12,6 +12,9 @@ import AFNetworking
 class PhotosViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var posts: [NSDictionary] = []
+    var lastIndexOfPosts: Int?
+    var loadingView: InfiniteScrollActivityView?
+    let urlString = "https://api.tumblr.com/v2/blog/humansofnewyork.tumblr.com/posts/photo?api_key=Q6vHoaVm5L1u2ZAW1fqv3Jw48gFzYVg9P0vH0VHl3GVy6quoGV"
     
     @IBOutlet weak var mainTableView: UITableView!
     
@@ -47,15 +50,79 @@ class PhotosViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
 
+    var isLoading: Bool = false
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Handle scroll behavior here
+        
+        if (!isLoading){
+            let scrollViewContentHeight = mainTableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - mainTableView.bounds.size.height
+            
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && mainTableView.isDragging) {
+                isLoading = true
+                loadMoreData()
+                
+            }
+        }
+        
+    }
+    
+    func loadMoreData(){
+        // Update position of loadingMoreView, and start loading indicator
+        let frame = CGRect(x: 0, y: mainTableView.contentSize.height, width: mainTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingView?.frame = frame
+        loadingView!.startAnimating()
+        let offsetUrlString = urlString + "&offset=\(lastIndexOfPosts!)"
+        let request = URLRequest(url: URL(string: offsetUrlString)!)
+        // Configure session so that completion handler is executed on main UI thread
+        let session = URLSession(
+            configuration: URLSessionConfiguration.default,
+            delegate:nil,
+            delegateQueue:OperationQueue.main
+        )
+        
+        let task : URLSessionDataTask = session.dataTask(with: request, completionHandler: { (data, response, error) in
+            
+            self.isLoading = false
+            self.loadingView!.stopAnimating()
+            if let data = data {
+                if let responseDictionary = try! JSONSerialization.jsonObject(
+                    with: data, options:[]) as? NSDictionary {
+                    //print("responseDictionary: \(responseDictionary)")
+                    
+                    // Recall there are two fields in the response dictionary, 'meta' and 'response'.
+                    // This is how we get the 'response' field
+                    let responseFieldDictionary = responseDictionary["response"] as! NSDictionary
+                    print("appending")
+                    self.posts.append(contentsOf: responseFieldDictionary["posts"] as! [NSDictionary])
+                    self.lastIndexOfPosts = self.posts.count
+                    self.mainTableView.reloadData()
+                }
+            }
+            
+                                                                        
+            self.mainTableView.reloadData()
+        });
+        task.resume()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Set up Infinite Scroll loading indicator
+        let frame = CGRect(x: 0, y: mainTableView.contentSize.height, width: mainTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingView = InfiniteScrollActivityView(frame: frame)
+        loadingView!.isHidden = true
+        mainTableView.addSubview(loadingView!)
+        
+        var insets = mainTableView.contentInset;
+        insets.bottom += InfiniteScrollActivityView.defaultHeight;
+        mainTableView.contentInset = insets
         
         mainTableView.delegate = self
         mainTableView.dataSource = self
 
         // Do any additional setup after loading the view.
-        let url = URL(string:"https://api.tumblr.com/v2/blog/humansofnewyork.tumblr.com/posts/photo?api_key=Q6vHoaVm5L1u2ZAW1fqv3Jw48gFzYVg9P0vH0VHl3GVy6quoGV")
+        let url = URL(string:urlString)
         let request = URLRequest(url: url!)
         let session = URLSession(
             configuration: URLSessionConfiguration.default,
@@ -77,6 +144,7 @@ class PhotosViewController: UIViewController, UITableViewDelegate, UITableViewDa
                         
                         // This is where you will store the returned array of posts in your posts property
                         self.posts = responseFieldDictionary["posts"] as! [NSDictionary]
+                        self.lastIndexOfPosts = self.posts.count
                         self.mainTableView.reloadData()
                     }
                 }

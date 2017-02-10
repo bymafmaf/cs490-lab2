@@ -15,6 +15,7 @@
 		D23188231E43F6B500B60A25 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23188221E43F6B500B60A25 /* PhotosViewController.swift */; };
 		D23188261E43F99700B60A25 /* PostCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23188251E43F99700B60A25 /* PostCellTableViewCell.swift */; };
 		D24F58041E4D329A00A431CC /* PhotoDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24F58031E4D329A00A431CC /* PhotoDetailsViewController.swift */; };
+		D24F58061E4D396400A431CC /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24F58051E4D396400A431CC /* InfiniteScrollActivityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		D23188221E43F6B500B60A25 /* PhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
 		D23188251E43F99700B60A25 /* PostCellTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCellTableViewCell.swift; sourceTree = "<group>"; };
 		D24F58031E4D329A00A431CC /* PhotoDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetailsViewController.swift; sourceTree = "<group>"; };
+		D24F58051E4D396400A431CC /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				D23188251E43F99700B60A25 /* PostCellTableViewCell.swift */,
+				D24F58051E4D396400A431CC /* InfiniteScrollActivityView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D24F58061E4D396400A431CC /* InfiniteScrollActivityView.swift in Sources */,
 				D24F58041E4D329A00A431CC /* PhotoDetailsViewController.swift in Sources */,
 				D23188261E43F99700B60A25 /* PostCellTableViewCell.swift in Sources */,
 				D23188111E43F58600B60A25 /* AppDelegate.swift in Sources */,
